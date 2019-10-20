@@ -120,7 +120,7 @@ void stepmatrix(matrix &mat, int maxlen) {
 				}
 				if (ancestor == badroot) {
 					entry.first += cut[j].first - mat[badroot][j].first;
-					if (entry.second == -1) { // obviously wrong
+					if (entry.second == -1) {
 						entry.second = cut[j].second;
 					} else if (entry.second >= badroot) {
 						entry.second += badpartlen;
@@ -153,6 +153,24 @@ void stepmatrix(matrix &mat, int maxlen) {
 					}
 				}
 			}
+						int parent;
+						if (i > 0) {
+							if (j > 0) {
+								parent = mat[i][j - 1].second;
+							} else {
+								parent = i - 1;
+							}
+							while (parent >= 0 && mat[parent][j].first >= mat[i][j].first) {
+								if (j > 0) {
+									parent = mat[parent][j - 1].second;
+								} else {
+									parent--;
+								}
+							}
+						} else {
+							parent = -1;
+						}
+						entry.second = parent;
 			newcol.push_back(entry);
 		}
 		mat.push_back(newcol);
