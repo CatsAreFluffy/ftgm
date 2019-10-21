@@ -97,20 +97,25 @@ void checkubi(matrix &mat) {
 		}
 	}
 }
-void stepmatrix(matrix &mat, unsigned int maxlen) {
+int stepmatrix(matrix &mat, unsigned int maxlen) {
 	column cut = mat.back();
 	mat.pop_back();
 	if (cut.size() == 0 || cut[0].first == 0) {
-		return;
+		return 1;
 	}
 	unsigned int critrow;
 	for (critrow = cut.size() - 1; cut[critrow].first == 0; critrow--) {}
 	int badroot = cut[critrow].second;
 	int badpartlen = mat.size() - badroot;
 	unsigned int limit = mat.size();
+	#ifdef BM2D3
+	limit = maxlen;
+	#else
 	while (limit + badpartlen <= maxlen) {limit += badpartlen;}
+	#endif
 	for (unsigned int i = badroot; mat.size() < limit; i++) {
 		column newcol;
+		newcol.reserve(cut.size());
 		for (unsigned int j = 0; j < cut.size(); j++) {
 			std::pair<int, int> entry = mat[i][j];
 			if (j < critrow) {
@@ -146,6 +151,7 @@ void stepmatrix(matrix &mat, unsigned int maxlen) {
 	#ifdef CHECK_UBI
 	checkubi(mat);
 	#endif
+	return 0;
 }
 int main(int argc, char const *argv[]) {
 	if (argc < 3) {
@@ -166,19 +172,21 @@ int main(int argc, char const *argv[]) {
 		ss >> limit;
 	}
 	int steps = 0;
+	int counter = 0;
 	for (unsigned int i = 0; i < target.size(); i++) {
 		for (unsigned int j = 0; j < target[i].size(); j++) {
 			while (mat[i][j] != target[i][j]) {
-				stepmatrix(mat, limit);
+				counter += stepmatrix(mat, limit);
 				steps++;
 			}
 		}
 	}
 	while (mat.size() > target.size()) {
-		stepmatrix(mat, limit);
+		counter += stepmatrix(mat, limit);
 		steps++;
 	}
 	std::cout << "Steps: " << steps << std::endl;
+	std::cout << "Counter: " << counter << std::endl;
 	#endif
 	return 0;
 }
