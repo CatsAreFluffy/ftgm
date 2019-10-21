@@ -7,7 +7,7 @@ typedef std::vector<column> matrix;
 matrix parsematrix(char const *str) {
 	matrix ret;
 	column col;
-	int acc;
+	int acc = 0;
 	for (int i = 0; str[i]; i++) {
 		if (isdigit(str[i])) {
 			acc *= 10;
@@ -45,8 +45,8 @@ matrix parsematrix(char const *str) {
 	return ret;
 }
 void printmatrix(matrix mat) {
-	for (int i = 0; i < mat.size(); i++) {
-		for (int j = 0; j < mat[0].size(); j++) {
+	for (unsigned int i = 0; i < mat.size(); i++) {
+		for (unsigned int j = 0; j < mat[0].size(); j++) {
 			if (mat[i][j].second >= 0) {
 				std::cout << mat[i][j].first << mat[i][j].second << ' ';
 			} else {
@@ -57,9 +57,9 @@ void printmatrix(matrix mat) {
 	}
 }
 void printmatrixshort(matrix mat) {
-	for (int i = 0; i < mat.size(); i++) {
+	for (unsigned int i = 0; i < mat.size(); i++) {
 		std::cout << '(';
-		for (int j = 0; j < mat[0].size(); j++) {
+		for (unsigned int j = 0; j < mat[0].size(); j++) {
 			if (j > 0) {
 				std::cout << ',';
 			}
@@ -70,8 +70,8 @@ void printmatrixshort(matrix mat) {
 	std::cout << std::endl;
 }
 void checkubi(matrix &mat) {
-	for (int i = 0; i < mat.size(); i++) {
-		for (int j = 0; j < mat[i].size(); j++) {
+	for (unsigned int i = 0; i < mat.size(); i++) {
+		for (unsigned int j = 0; j < mat[i].size(); j++) {
 			int parent;
 			if (i > 0) {
 				if (j > 0) {
@@ -97,21 +97,21 @@ void checkubi(matrix &mat) {
 		}
 	}
 }
-void stepmatrix(matrix &mat, int maxlen) {
+void stepmatrix(matrix &mat, unsigned int maxlen) {
 	column cut = mat.back();
 	mat.pop_back();
 	if (cut.size() == 0 || cut[0].first == 0) {
 		return;
 	}
-	int critrow;
+	unsigned int critrow;
 	for (critrow = cut.size() - 1; cut[critrow].first == 0; critrow--) {}
 	int badroot = cut[critrow].second;
 	int badpartlen = mat.size() - badroot;
-	int limit = mat.size();
+	unsigned int limit = mat.size();
 	while (limit + badpartlen <= maxlen) {limit += badpartlen;}
-	for (int i = badroot; mat.size() < limit; i++) {
+	for (unsigned int i = badroot; mat.size() < limit; i++) {
 		column newcol;
-		for (int j = 0; j < cut.size(); j++) {
+		for (unsigned int j = 0; j < cut.size(); j++) {
 			std::pair<int, int> entry = mat[i][j];
 			if (j < critrow) {
 				int ancestor = i;
@@ -165,9 +165,9 @@ int main(int argc, char const *argv[]) {
 		std::istringstream ss(argv[3]);
 		ss >> limit;
 	}
-	int steps;
-	for (int i = 0; i < target.size(); i++) {
-		for (int j = 0; j < target[i].size(); j++) {
+	int steps = 0;
+	for (unsigned int i = 0; i < target.size(); i++) {
+		for (unsigned int j = 0; j < target[i].size(); j++) {
 			while (mat[i][j] != target[i][j]) {
 				stepmatrix(mat, limit);
 				steps++;
